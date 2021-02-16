@@ -52,13 +52,22 @@ def users_target_table(df): # Genera un DataFrame en el que cada csv es un row d
 # TO DO: def check_duplicates(df):
 
 
+# Lista para pasarle y que elimine los outliers:[73, 74]
+def remove_duplicates(df,index_remove=None): # Elimina del DataFrame los index que se pasen por parámetro (en forma de lista)
+    df.drop(index_remove,inplace=True)
+    df_users = df.reset_index().drop(columns='index')
+    return df_users
+
+
 # EJECUCIÓN DE FUNCIONES:
 
 '''
-load_data(r'../2_DATA_USERS_PUBLIC_TARGET')
+#load_data(r'../2_DATA_USERS_PUBLIC_TARGET') # Cuando estaba el script de strategies.py este este path
+load_data(r'/Users/manuelvicarioperez/VICARIO_PROJECT/STRATEGY/test/TEST_PAU_ECHE/2_DATA_USERS_PUBLIC_TARGET')
 df_rename_column(data)
 users_target_table(data)
-'''
+remove_duplicates(df_users,[73,74])'''
+
 
 
 
