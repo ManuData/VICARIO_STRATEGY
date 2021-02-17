@@ -61,26 +61,35 @@ def remove_duplicates(df,index_remove=None): # Elimina del DataFrame los index q
 #3. Generamos tabla con estrategias en función de las combinaciones f (stage que nos encontremos)
 
 strategies_combinations_1 = ['follow & unfollow','comment','like','nombrar','reaccionar historias','ver historia']
-def strategies_generation(strategies_combinations=None): # Genera un DataFrame con las estrategias. TO DO: Si las combinaciones cambian.
+def strategies_generation(strategies_combinations=None): # Genera un DataFrame con las estrategias. TO DO: Si las combinaciones cambian y son tuplas u otras estructuras
     global df_strategies
     df_strategies = pd.DataFrame({'STRATEGIES':strategies_combinations})
     return df_strategies
 
 
+def strategy_mapping(strategy,users): # Mapeo las estrategias a usuarios y genero un DataFrame
+    mapeo_estrategias = list(map(lambda x:strategy.STRATEGIES[random.randint(0,len(strategy)-1)],users.TARGET_USERS))
+    global df_users_strategies
+    df_users_strategies = pd.DataFrame({'USERS':users.TARGET_USERS,'STRATEGY':mapeo_estrategias})
+    return df_users_strategies
+
+   
 
 
 
 
 # EJECUCIÓN DE FUNCIONES:
 
-'''
+
 #load_data(r'../2_DATA_USERS_PUBLIC_TARGET') # Cuando estaba el script de strategies.py este este path
 load_data(r'/Users/manuelvicarioperez/VICARIO_PROJECT/STRATEGY/test/TEST_PAU_ECHE/2_DATA_USERS_PUBLIC_TARGET')
 df_rename_column(data)
 users_target_table(data)
 remove_duplicates(df_users,[73,74])
 strategies_generation(strategies_combinations_1)
-'''
+strategy_mapping(df_strategies,df_users)
+
+
 
 
 
