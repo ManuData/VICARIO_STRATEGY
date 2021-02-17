@@ -73,14 +73,34 @@ def strategy_mapping(strategy,users): # Mapeo las estrategias a usuarios y gener
     df_users_strategies = pd.DataFrame({'USERS':users.TARGET_USERS,'STRATEGY':mapeo_estrategias})
     return df_users_strategies
 
-   
+def days_for_strategy(fecha_inicio,dias): # Asignación de días al DataFrame para ejecutar las estrategias predefinidas
+# string fecha_inicio = pd.to_datetime('today').normalize(). El normalize() para no heredar el timestamp dejandolo en 0.
+# int dias
+    fechas = pd.date_range(fecha_inicio, periods=dias, freq="D")
+    global mapeo_fechas
+    mapeo_fechas = list(map(lambda x:fechas[random.randint(0,len(fechas)-1)],df_users_strategies.USERS))
+    return mapeo_fechas
+
+def target(df,mapped_dates):
+    global df_target
+    df_target = df.copy()
+    df_target['FECHAS'] = mapped_dates
+    return df_target
+
+
+def bot_test(df): # Objetivo generación de output para automatizar bot
+    print(df.groupby(['STRATEGY']).agg({'STRATEGY':'count','USERS':lambda x: [user for user in x]}))
 
 
 
+def test(global_variable): # Objetivo hacer print del output de una variable global. TO DO incorporar más variables.
+    print(global_variable)
+
+
+    
 
 # EJECUCIÓN DE FUNCIONES:
-
-
+'''
 #load_data(r'../2_DATA_USERS_PUBLIC_TARGET') # Cuando estaba el script de strategies.py este este path
 load_data(r'/Users/manuelvicarioperez/VICARIO_PROJECT/STRATEGY/test/TEST_PAU_ECHE/2_DATA_USERS_PUBLIC_TARGET')
 df_rename_column(data)
@@ -88,6 +108,11 @@ users_target_table(data)
 remove_duplicates(df_users,[73,74])
 strategies_generation(strategies_combinations_1)
 strategy_mapping(df_strategies,df_users)
+days_for_strategy(pd.to_datetime('today').normalize(),8)
+target(df_users_strategies,mapeo_fechas)
+bot_test(df_target)
+#test(df_target)
+'''
 
 
 
