@@ -31,7 +31,6 @@ def load_data(path=None): # Importa los datos de un path concreto
     for file in all_files:
         df = pd.read_csv(file,header=None)
         li.append(df)
-    global data
     data = pd.concat(li, axis=0, ignore_index=True)
     return data
 
@@ -44,7 +43,6 @@ def users_target_table(df): # Genera un DataFrame en el que cada csv es un row d
     rtdo = []
     for user_list in df.CSV:
         rtdo = rtdo+ast.literal_eval(user_list)
-    global df_users
     df_users = pd.DataFrame({'TARGET_USERS':rtdo})
     return df_users
 
@@ -62,14 +60,12 @@ def remove_duplicates(df,index_remove=None): # Elimina del DataFrame los index q
 
 strategies_combinations_1 = ['follow & unfollow','comment','like','nombrar','reaccionar historias','ver historia']
 def strategies_generation(strategies_combinations=None): # Genera un DataFrame con las estrategias. TO DO: Si las combinaciones cambian y son tuplas u otras estructuras
-    global df_strategies
     df_strategies = pd.DataFrame({'STRATEGIES':strategies_combinations})
     return df_strategies
 
 
 def strategy_mapping(strategy,users): # Mapeo las estrategias a usuarios y genero un DataFrame
     mapeo_estrategias = list(map(lambda x:strategy.STRATEGIES[random.randint(0,len(strategy)-1)],users.TARGET_USERS))
-    global df_users_strategies
     df_users_strategies = pd.DataFrame({'USERS':users.TARGET_USERS,'STRATEGY':mapeo_estrategias})
     return df_users_strategies
 
@@ -77,12 +73,10 @@ def days_for_strategy(fecha_inicio,dias): # Asignación de días al DataFrame pa
 # string fecha_inicio = pd.to_datetime('today').normalize(). El normalize() para no heredar el timestamp dejandolo en 0.
 # int dias
     fechas = pd.date_range(fecha_inicio, periods=dias, freq="D")
-    global mapeo_fechas
     mapeo_fechas = list(map(lambda x:fechas[random.randint(0,len(fechas)-1)],df_users_strategies.USERS))
     return mapeo_fechas
 
 def target(df,mapped_dates):
-    global df_target
     df_target = df.copy()
     df_target['FECHAS'] = mapped_dates
     return df_target
@@ -97,22 +91,23 @@ def test(global_variable): # Objetivo hacer print del output de una variable glo
     print(global_variable)
 
 
-    
-
 # EJECUCIÓN DE FUNCIONES:
-'''
+
 #load_data(r'../2_DATA_USERS_PUBLIC_TARGET') # Cuando estaba el script de strategies.py este este path
-load_data(r'/Users/manuelvicarioperez/VICARIO_PROJECT/STRATEGY/test/TEST_PAU_ECHE/2_DATA_USERS_PUBLIC_TARGET')
+#load_data(r'/Users/manuelvicarioperez/VICARIO_PROJECT/STRATEGY/test/TEST_PAU_ECHE/2_DATA_USERS_PUBLIC_TARGET')
+data = load_data(r'/Users/manuelvicarioperez/VICARIO_PROJECT/STRATEGY/test/TEST_PAU_ECHE/2_DATA_USERS_PUBLIC_TARGET')
 df_rename_column(data)
 users_target_table(data)
+df_users = users_target_table(data)
 remove_duplicates(df_users,[73,74])
-strategies_generation(strategies_combinations_1)
-strategy_mapping(df_strategies,df_users)
-days_for_strategy(pd.to_datetime('today').normalize(),8)
-target(df_users_strategies,mapeo_fechas)
+strategies_combinations_1 = ['follow & unfollow','comment','like','nombrar','reaccionar historias','ver historia']
+df_strategies = strategies_generation(strategies_combinations_1)
+df_users_strategies = strategy_mapping(df_strategies,df_users)
+mapeo_fechas = days_for_strategy(pd.to_datetime('today').normalize(),8)
+df_target = target(df_users_strategies,mapeo_fechas)
 bot_test(df_target)
 #test(df_target)
-'''
+
 
 
 
