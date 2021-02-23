@@ -9,6 +9,7 @@
 6. Agrupación usuarios-estrategia para realización de post análisis
 
 TO DO: Identificar las funciones que tiene que tener la clase
+
 '''
 
 import pandas as pd
@@ -17,6 +18,11 @@ import random
 import glob
 import ast
 import calendar
+
+# VARIBLES CONSTANTES:
+strategies_combinations_1 = ['follow & unfollow','comment','like','nombrar','reaccionar historias','ver historia']
+strategies_combinations_1_reduced = ['comment','like','reaccionar historias','ver historia']
+
 
 # 1. Descarga de todos datos de un path:
 # NOTA: Guardar en un archivo de texto o en una lista/array para identificar lectura de paths
@@ -87,6 +93,11 @@ def bot_test(df): # Objetivo generación de output para automatizar bot
 
 
 
+def export_to_csv(df,path,name_csv_file):
+    return print(df.to_csv('{}{}.csv'.format(path,name_csv_file), index = False))
+
+
+
 def test(global_variable): # Objetivo hacer print del output de una variable global. TO DO incorporar más variables.
     print(global_variable)
 
@@ -95,17 +106,18 @@ def test(global_variable): # Objetivo hacer print del output de una variable glo
 
 #load_data(r'../2_DATA_USERS_PUBLIC_TARGET') # Cuando estaba el script de strategies.py este este path
 #load_data(r'/Users/manuelvicarioperez/VICARIO_PROJECT/STRATEGY/test/TEST_PAU_ECHE/2_DATA_USERS_PUBLIC_TARGET')
+
 data = load_data(r'/Users/manuelvicarioperez/VICARIO_PROJECT/STRATEGY/test/TEST_PAU_ECHE/2_DATA_USERS_PUBLIC_TARGET')
 df_rename_column(data)
 users_target_table(data)
 df_users = users_target_table(data)
 remove_duplicates(df_users,[73,74])
-strategies_combinations_1 = ['follow & unfollow','comment','like','nombrar','reaccionar historias','ver historia']
-df_strategies = strategies_generation(strategies_combinations_1)
+df_strategies = strategies_generation(strategies_combinations_1_reduced)
 df_users_strategies = strategy_mapping(df_strategies,df_users)
-mapeo_fechas = days_for_strategy(pd.to_datetime('today').normalize(),8)
+mapeo_fechas = days_for_strategy(pd.to_datetime('today').normalize(),7)
 df_target = target(df_users_strategies,mapeo_fechas)
-bot_test(df_target)
+export_to_csv(df_target,r'/Users/manuelvicarioperez/VICARIO_PROJECT/STRATEGY/TEST/TEST_PAU_ECHE/3_STRATEGIES/','strategies_february')
+#bot_test(df_target)
 #test(df_target)
 
 
